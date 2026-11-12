@@ -1,3 +1,4 @@
+
 name: Build RALLY COPILOT GPS APK
 
 on:
@@ -31,6 +32,20 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Fix Java and Kotlin versions
+        run: |
+          cat >> RallyCopilotGPS/app/build.gradle <<'EOF'
+
+          tasks.withType(JavaCompile).configureEach {
+              sourceCompatibility = '17'
+              targetCompatibility = '17'
+          }
+
+          tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+              kotlinOptions.jvmTarget = '17'
+          }
+          EOF
+
       - name: Build APK
         run: gradle -p RallyCopilotGPS assembleDebug
 
@@ -40,3 +55,5 @@ jobs:
           name: RALLY-COPILOT-GPS-APK
           path: RallyCopilotGPS/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
+          
