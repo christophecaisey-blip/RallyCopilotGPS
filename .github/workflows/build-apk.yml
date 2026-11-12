@@ -31,7 +31,7 @@ jobs:
           PROJECT_DIR=$(dirname "$PROJECT_FILE")
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
           echo "Project found: $PROJECT_DIR"
-
+          
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
