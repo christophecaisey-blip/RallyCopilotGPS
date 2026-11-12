@@ -2,7 +2,7 @@ YAML
 
 name: Build RALLY COPILOT GPS APK
 
-on:
+"on":
   workflow_dispatch:
   push:
     paths:
@@ -26,13 +26,13 @@ jobs:
         run: |
           PROJECT_FILE=$(find ./source -type f \( -name settings.gradle -o -name settings.gradle.kts \) -print -quit)
           if [ -z "$PROJECT_FILE" ]; then
-            echo "Fichier settings.gradle introuvable"
+            echo "Gradle settings file not found"
             find ./source -maxdepth 5 -type f
             exit 1
           fi
           PROJECT_DIR=$(dirname "$PROJECT_FILE")
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-          echo "Projet trouvé dans : $PROJECT_DIR"
+          echo "Project found: $PROJECT_DIR"
 
       - name: Set up Java
         uses: actions/setup-java@v4
