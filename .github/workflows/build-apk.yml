@@ -1,3 +1,4 @@
+YAML
 
 name: Build RALLY COPILOT GPS APK
 
@@ -19,7 +20,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Unpack Android project
-        run: unzip -o RallyCopilotGPS_prototype_android.zip -d .
+        run: unzip -o RallyCopilotGPS_prototype_android.zip -d ./source
+
+      - name: Find Android project
+        run: |
+          PROJECT_FILE=$(find ./source -type f \( -name settings.gradle -o -name settings.gradle.kts \) -print -quit)
+          if [ -z "$PROJECT_FILE" ]; then
+            echo "Fichier settings.gradle introuvable"
+            find ./source -maxdepth 5 -type f
+            exit 1
+          fi
+          PROJECT_DIR=$(dirname "$PROJECT_FILE")
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "Projet trouvé dans : $PROJECT_DIR"
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -34,7 +47,7 @@ jobs:
 
       - name: Fix Java and Kotlin versions
         run: |
-          cat >> RallyCopilotGPS/app/build.gradle <<'EOF'
+          cat >> "$PROJECT_DIR/app/build.gradle" <<'EOF'
 
           tasks.withType(JavaCompile).configureEach {
               sourceCompatibility = '17'
@@ -47,13 +60,13 @@ jobs:
           EOF
 
       - name: Build APK
-        run: gradle -p RallyCopilotGPS assembleDebug
+        run: gradle -p "$PROJECT_DIR" assembleDebug
 
       - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: RALLY-COPILOT-GPS-APK
-          path: RallyCopilotGPS/app/build/outputs/apk/debug/app-debug.apk
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
           
