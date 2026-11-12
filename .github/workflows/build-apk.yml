@@ -22,11 +22,8 @@ jobs:
 
       - name: Find Android project
         run: |
-           echo "CONTENU DU ZIP :"
-           find ./source -maxdepth 5 -type f
-           echo "DOSSIERS :"
-           find ./source -maxdepth 4 -type d
-          
+          echo "PROJECT_DIR=./source/RallyCopilotGPS" >> "$GITHUB_ENV"
+             
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -40,9 +37,7 @@ jobs:
 
       - name: Fix Java and Kotlin versions
         run: |
-          echo "Dossier du projet : $PROJECT_DIR"
-          echo "Fichiers Gradle disponibles :"
-          find ./source -name "build.gradle" -o -name "build.gradle.kts"
+          echo "Projet Android trouvé : ./source/RallyCopilotGPS"
           
       - name: Build APK
         run: gradle -p "$PROJECT_DIR" assembleDebug
