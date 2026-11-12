@@ -1,7 +1,5 @@
 name: Build RALLY COPILOT GPS APK
 
-YAML
-
 on:
   workflow_dispatch:
   push:
